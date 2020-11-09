@@ -3,7 +3,6 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pss
 
-
 class RSA_OBJECT:
     
     def __init__(self):
@@ -55,7 +54,6 @@ class RSA_OBJECT:
         # La firma se realiza sobre el hash del texto (h)
         try:
             h = SHA256.new(texto)
-            print(h.hexdigest())
             signature = pss.new(self.private_key).sign(h)
             return signature
         except (ValueError, TypeError):
@@ -64,7 +62,6 @@ class RSA_OBJECT:
     def comprobar(self, texto, firma):
         # Comprobamos que la firma coincide con el hash (h)
         h = SHA256.new(texto)
-        print(h.hexdigest())
         verifier = pss.new(self.public_key)
         try:
             verifier.verify(h, firma)
