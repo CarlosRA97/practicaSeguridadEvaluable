@@ -1,5 +1,5 @@
+from libAES import AES_OBJECT
 from Crypto.Cipher import AES
-from libAES import AES_CIPHER
 from libRSA import RSA_OBJECT
 
 text = "Hola amigos de la seguridad"
@@ -9,13 +9,13 @@ alice.load_PrivateKey("Pri_A", "alice")
 bob = RSA_OBJECT()
 bob.load_PublicKey("Pub_B")
 
-K = AES_CIPHER.generarClave()
-nonce = AES_CIPHER.generarIV()
+K = AES_OBJECT.generarClave()
+nonce = AES_OBJECT.generarIV()
 
 cypherkey = bob.cifrar(K)
 sign = alice.firmar(cypherkey)
 
-aes = AES_CIPHER(text, AES.MODE_GCM)
+aes = AES_OBJECT(K, AES.MODE_GCM)
 cyphertext = aes.cifrar(text, nonce)
 
 with open('cyphertext', 'wb') as f: 
