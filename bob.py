@@ -13,6 +13,12 @@ with open('cyphertext', 'rb') as f:
 with open('cyphertext2', 'rb') as f: 
     cyphertext2 = f.read()
 
+with open('mac', 'rb') as f: 
+    mac = f.read()
+
+with open('mac2', 'rb') as f: 
+    mac2 = f.read()
+
 with open('cypherkey', 'rb') as f:
     cypherkey = f.read()
 
@@ -24,9 +30,9 @@ with open('nonce', 'rb') as f:
 
 if alice.comprobar(cypherkey, sign):
     K = bob.descifrar(cypherkey)
-    aes = AES_OBJECT(K, AES.MODE_GCM)
-    text = aes.descifrar(cyphertext, nonce)
-    text2 = aes.descifrar(cyphertext2, nonce)
+    aes = AES_OBJECT(K, AES.MODE_GCM, nonce)
+    text = aes.descifrar(cyphertext, mac)
+    text2 = aes.descifrar(cyphertext2, mac2)
     print(text)
     print(text2)
 else:

@@ -16,15 +16,21 @@ nonce = AES_OBJECT.generarIV()
 cypherkey = bob.cifrar(K)
 sign = alice.firmar(cypherkey)
 
-aes = AES_OBJECT(K, AES.MODE_GCM)
-cyphertext = aes.cifrar(text, nonce)
-cyphertext2 = aes.cifrar(text2, nonce)
+aes = AES_OBJECT(K, AES.MODE_GCM, nonce)
+cyphertext, mac = aes.cifrar(text)
+cyphertext2, mac2 = aes.cifrar(text2)
 
 with open('cyphertext', 'wb') as f: 
     f.write(cyphertext)
 
 with open('cyphertext2', 'wb') as f:
     f.write(cyphertext2)
+
+with open('mac', 'wb') as f:
+    f.write(mac)
+
+with open('mac2', 'wb') as f:
+    f.write(mac2)
 
 with open('cypherkey', 'wb') as f:
     f.write(cypherkey)
