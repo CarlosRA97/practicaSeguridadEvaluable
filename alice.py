@@ -1,6 +1,5 @@
 from libAES import cifrarAES, crear_AESKey, crear_AESSource
 from libRSA import RSA_OBJECT
-from Crypto.Cipher import AES
 
 text = "Hola amigos y amigas de la seguridad"
 text2 = "Adios amigos y amigas de la seguridad"

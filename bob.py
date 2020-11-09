@@ -1,6 +1,5 @@
 from libAES import crear_AESDestination, descifrarAES
 from libRSA import RSA_OBJECT
-from Crypto.Cipher import AES
 
 alice = RSA_OBJECT()
 bob = RSA_OBJECT()
