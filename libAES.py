@@ -50,18 +50,26 @@ def crear_AESKey():
 def crear_AESSource(key_16):
     """Crea un objeto aes junto con el nonce inicial para enviar datos. """
     # INCLUIR CODIGO AQUI
-    return aes_object, nonce_16_ini
+    nonce = AES_OBJECT.generarIV()
+    return AES_OBJECT(key_16, AES.MODE_GCM, nonce), nonce
+    
 def crear_AESDestination(key_16, nonce_16_ini):
     """Crea un objeto aes para recibir datos"""
     # INCLUIR CODIGO AQUI
-    return aes_object
-def cifrarAES(aes_cifrado, cadena):
+    return AES_OBJECT(key_16, AES.MODE_GCM, nonce_16_ini)
+
+def cifrarAES(aes_cifrado: AES_OBJECT, cadena):
     """Cifra el parametro cadena (de tipo String), y devuelve el texto cifrado binario
     Y el mac"""
     # INCLUIR CODIGO AQUI
-    return datos_cifrado, mac_cifrado
-def descifrarAES(aes_descifrado, datos, mac):
+    return aes_cifrado.cifrar(cadena) # datos_cifrado, mac_cifrado
+
+def descifrarAES(aes_descifrado: AES_OBJECT, datos, mac):
     """Descifra el parametro datos (de tipo binario), y devuelve la cadena en claro de
     tipo String.
     También comprueba si el mac es correcto"""
     # INCLUIR CODIGO AQUI con un try...except -> return datos_claro o return false
+    try:
+        return aes_descifrado.descifrar(datos, mac)
+    except:
+        return False

@@ -1,4 +1,4 @@
-from libAES import AES_OBJECT
+from libAES import cifrarAES, crear_AESKey, crear_AESSource
 from libRSA import RSA_OBJECT
 from Crypto.Cipher import AES
 
@@ -10,15 +10,14 @@ bob = RSA_OBJECT()
 alice.load_PrivateKey("Pri_A", "alice")
 bob.load_PublicKey("Pub_B")
 
-K = AES_OBJECT.generarClave()
-nonce = AES_OBJECT.generarIV()
+K = crear_AESKey()
 
 cypherkey = bob.cifrar(K)
 sign = alice.firmar(cypherkey)
 
-aes = AES_OBJECT(K, AES.MODE_GCM, nonce)
-cyphertext, mac = aes.cifrar(text)
-cyphertext2, mac2 = aes.cifrar(text2)
+aes, nonce = crear_AESSource(K)
+cyphertext, mac = cifrarAES(aes, text)
+cyphertext2, mac2 = cifrarAES(aes, text2)
 
 with open('cyphertext', 'wb') as f: 
     f.write(cyphertext)

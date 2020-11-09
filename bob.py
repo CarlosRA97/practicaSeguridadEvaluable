@@ -1,4 +1,4 @@
-from libAES import AES_OBJECT
+from libAES import crear_AESDestination, descifrarAES
 from libRSA import RSA_OBJECT
 from Crypto.Cipher import AES
 
@@ -30,9 +30,9 @@ with open('nonce', 'rb') as f:
 
 if alice.comprobar(cypherkey, sign):
     K = bob.descifrar(cypherkey)
-    aes = AES_OBJECT(K, AES.MODE_GCM, nonce)
-    text = aes.descifrar(cyphertext, mac)
-    text2 = aes.descifrar(cyphertext2, mac2)
+    aes = crear_AESDestination(K, nonce)
+    text = descifrarAES(aes, cyphertext, mac)
+    text2 = descifrarAES(aes, cyphertext2, mac2)
     print(text)
     print(text2)
 else:
