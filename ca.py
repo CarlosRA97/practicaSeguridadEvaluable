@@ -1,10 +1,13 @@
-from libRSA import crear_RSAKey, guardar_RSAKey_Privada, guardar_RSAKey_Publica
+from libRSA import RSA_OBJECT
 
-alice_key = crear_RSAKey()
-bob_key = crear_RSAKey()
+alice = RSA_OBJECT()
+bob = RSA_OBJECT()
 
-guardar_RSAKey_Publica("Pub_A", alice_key)
-guardar_RSAKey_Privada("Pri_A", alice_key, "alice")
+alice.create_KeyPair()
+bob.create_KeyPair()
 
-guardar_RSAKey_Publica("Pub_B", bob_key)
-guardar_RSAKey_Privada("Pri_B", bob_key, "bob")
+alice.save_PublicKey("Pub_A")
+alice.save_PrivateKey("Pri_A", "alice")
+
+bob.save_PublicKey("Pub_B")
+bob.save_PrivateKey("Pri_B", "bob")

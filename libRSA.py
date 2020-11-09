@@ -4,58 +4,70 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pss
 
 
-def crear_RSAKey():
-    key = RSA.generate(2048)
-    return key
+class RSA_OBJECT:
     
-def guardar_RSAKey_Privada(fichero, key, password):
-    key_cifrada = key.export_key(passphrase=password, pkcs=8, protection="scryptAndAES128-CBC")
-    file_out = open(fichero, "wb")
-    file_out.write(key_cifrada)
-    file_out.close()
+    def __init__(self):
+        self.private_key = None
+        self.public_key = None
 
-def cargar_RSAKey_Privada(fichero, password):
-    key_cifrada = open(fichero, "rb").read()
-    key = RSA.import_key(key_cifrada, passphrase=password)
-    return key
+    def create_KeyPair(self):
+        key = RSA.generate(2048)
+        self.private_key = key
+        self.public_key = key.publickey()
+    
+    def save_PrivateKey(self, fichero, password):
+        key_cifrada = self.private_key.export_key(passphrase=password, pkcs=8, protection="scryptAndAES128-CBC")
+        with open(fichero, "wb") as file_out:
+            file_out.write(key_cifrada)
 
-def guardar_RSAKey_Publica(fichero, key):
-    key_pub = key.publickey().export_key()
-    file_out = open(fichero, "wb")
-    file_out.write(key_pub)
-    file_out.close()
+    def load_PrivateKey(self, fichero, password):
+        key_cifrada = open(fichero, "rb").read()
+        self.private_key = RSA.import_key(key_cifrada, passphrase=password)
 
-def cargar_RSAKey_Publica(fichero):
-    keyFile = open(fichero, "rb").read()
-    key_pub = RSA.import_key(keyFile)
-    return key_pub
+    def save_PublicKey(self, fichero):
+        key_pub = self.public_key.export_key()
+        with open(fichero, "wb") as file_out:
+            file_out.write(key_pub)
 
-def cifrarRSA_OAEP(cadena, key):
-    datos = cadena.encode("utf-8")
-    engineRSACifrado = PKCS1_OAEP.new(key)
-    cifrado = engineRSACifrado.encrypt(datos)
-    return cifrado
+    def load_PublicKey(self, fichero):
+        keyFile = open(fichero, "rb").read()
+        self.public_key = RSA.import_key(keyFile)
 
-def descifrarRSA_OAEP(cifrado, key):
-    engineRSADescifrado = PKCS1_OAEP.new(key)
-    datos = engineRSADescifrado.decrypt(cifrado)
-    cadena = datos.decode("utf-8")
-    return cadena
+    def cifrar(self, cadena):
+        try:
+            datos = cadena
+            engineRSACifrado = PKCS1_OAEP.new(self.public_key)
+            cifrado = engineRSACifrado.encrypt(datos)
+            return cifrado
+        except (ValueError, TypeError):
+            return None
 
-def firmarRSA_PSS(texto, key_private):
-    # La firma se realiza sobre el hash del texto (h)
-    h = SHA256.new(texto.encode("utf-8"))
-    print(h.hexdigest())
-    signature = pss.new(key_private).sign(h)
-    return signature
+    def descifrar(self, cifrado):
+        try:
+            engineRSADescifrado = PKCS1_OAEP.new(self.private_key)
+            datos = engineRSADescifrado.decrypt(cifrado)
+            cadena = datos
+            return cadena
+        except (ValueError, TypeError):
+            return None
 
-def comprobarRSA_PSS(texto, firma, key_public):
-    # Comprobamos que la firma coincide con el hash (h)
-    h = SHA256.new(texto.encode("utf-8"))
-    print(h.hexdigest())
-    verifier = pss.new(key_public)
-    try:
-        verifier.verify(h, firma)
-        return True
-    except (ValueError, TypeError):
-        return False
+    def firmar(self, texto):
+        # La firma se realiza sobre el hash del texto (h)
+        try:
+            h = SHA256.new(texto)
+            print(h.hexdigest())
+            signature = pss.new(self.private_key).sign(h)
+            return signature
+        except (ValueError, TypeError):
+            return None
+
+    def comprobar(self, texto, firma):
+        # Comprobamos que la firma coincide con el hash (h)
+        h = SHA256.new(texto)
+        print(h.hexdigest())
+        verifier = pss.new(self.public_key)
+        try:
+            verifier.verify(h, firma)
+            return True
+        except (ValueError, TypeError):
+            return False
